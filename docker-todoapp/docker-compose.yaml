@@ -1,0 +1,35 @@
+version: '3'
+services:
+  todoapp:
+    container_name: todoapp
+    restart: always
+    build: ./
+    volumes:
+      - ./:/var/www/todoapp
+    links:
+      - mongo
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+  
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+      
+FROM node:10-alpine
+
+# Create app directory
+WORKDIR /var/www/todoapp
+
+# Bundle app source
+COPY . .
+
+# Install app dependencies
+RUN npm install
+
+EXPOSE 8080
+CMD [ "node", "server.js" ]
